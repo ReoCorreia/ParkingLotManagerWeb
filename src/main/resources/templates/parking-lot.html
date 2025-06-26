@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Lot Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h1>Parking Lot Manager</h1>
+        <p class="text-muted">Manage your parking lot efficiently</p>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card bg-primary text-white text-center">
+                <div class="card-body">
+                    <h3 class="card-title" th:text="${totalSlots}">0</h3>
+                    <p class="card-text">Total Slots</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-success text-white text-center">
+                <div class="card-body">
+                    <h3 class="card-title" th:text="${availableSlots}">0</h3>
+                    <p class="card-text">Available Slots</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-danger text-white text-center">
+                <div class="card-body">
+                    <h3 class="card-title" th:text="${occupiedSlots}">0</h3>
+                    <p class="card-text">Occupied Slots</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forms -->
+    <div class="row mb-4">
+        <!-- Park Vehicle Form -->
+        <div class="col-lg-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Park Vehicle</h3>
+                    <form action="/parking/park" method="post">
+                        <div class="mb-3">
+                            <label for="licensePlate" class="form-label">License Plate:</label>
+                            <input type="text" class="form-control" id="licensePlate"
+                                   name="licensePlate" placeholder="Enter license plate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="vehicleSize" class="form-label">Vehicle Size:</label>
+                            <select class="form-select" id="vehicleSize" name="vehicleSize" required>
+                                <option value="">Select vehicle size</option>
+                                <option value="SMALL">SMALL</option>
+                                <option value="LARGE">LARGE</option>
+                                <option value="OVERSIZE">OVERSIZE</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            Park Vehicle
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Remove Vehicle Form -->
+        <div class="col-lg-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Remove Vehicle</h3>
+                    <form action="/parking/remove" method="post">
+                        <div class="mb-3">
+                            <label for="removeLicensePlate" class="form-label">License Plate:</label>
+                            <input type="text" class="form-control" id="removeLicensePlate"
+                                   name="licensePlate" placeholder="Enter license plate to remove" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">
+                            Remove Vehicle
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Parking Lot Grid -->
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">Parking Lot Status</h3>
+            <div class="row">
+                <div th:each="slot : ${slots}" class="col-md-3 col-sm-4 col-6 mb-3">
+                    <div th:if="${slot.occupied}" class="card bg-danger text-white text-center">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="'Slot ' + ${slot.id}">Slot 1</h5>
+                            <p class="card-text" th:text="${slot.slotSize}">SMALL</p>
+                            <p class="card-text" th:text="'Occupied by ' + ${slot.parkedVehicle.licensePlate}">
+                                Occupied
+                            </p>
+                        </div>
+                    </div>
+                    <div th:if="${!slot.occupied}" class="card bg-success text-white text-center">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="'Slot ' + ${slot.id}">Slot 1</h5>
+                            <p class="card-text" th:text="${slot.slotSize}">SMALL</p>
+                            <p class="card-text">Available</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reconfigure Button -->
+    <div class="text-center mt-4">
+        <a href="/setup" class="btn btn-outline-primary">
+            Reconfigure Parking Lot
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    window.onload = function() {
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            for (var i = 0; i < alerts.length; i++) {
+                alerts[i].style.display = 'none';
+            }
+        }, 3000);
+    };
+</script>
+</body>
+</html> 
